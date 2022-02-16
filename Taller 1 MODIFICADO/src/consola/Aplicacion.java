@@ -1,14 +1,11 @@
 package consola;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.PrintWriter;
+
 import logica.Bebida;
 import logica.Combo;
 import logica.Ingrediente;
@@ -42,7 +39,7 @@ public class Aplicacion {
    
 		restaurante.cargarInfoRestaurante
 		("./data/ingredientes.txt", 
-				"./data//menu.txt",
+				"./data/menu.txt",
 				"./data/combos.txt");
 
 	}
@@ -83,6 +80,7 @@ public class Aplicacion {
 							finalizado = true;
 							iniciado = false;
 							agregado = false;
+							enProgreso = 0;
 						}
 						else
 							System.out.print("\nDebes ver el menu y ordenar algun producto antes de finalizar tu pedido.");
@@ -138,7 +136,7 @@ public class Aplicacion {
 		boolean continuar = true;
 		while (continuar) {
 			try {
-				int menu = Integer.parseInt(input("Ingresa 1 para ver los productos y 2 para ver los combos"));
+				int menu = Integer.parseInt(input("Ingresa 1 para ver los productos, 2 para ver las bebidas y 3 para ver los combos"));
 				//input = 1 -> Agregar productos
 				if (menu == 1) {
 					continuar = false;
@@ -285,9 +283,9 @@ public class Aplicacion {
 				//input = 2 -> Agregar Bebida
 				if (menu == 2) {
 					continuar = false;
-					System.out.println("\n--------------- BEBIDAS ---------------\n");
+					System.out.println("\n--------------- BEBIDAS ---------------");
 					ArrayList<Bebida> bebidas = restaurante.getBebidas();
-					for (int i = 0; i < bebidas.size(); i++) {
+					for (int i = 19; i < bebidas.size(); i++) {
 						Bebida valorB = bebidas.get(i);
 						System.out.println((i+1) + ". " + valorB.getNombre() + " ----------------- $" + valorB.getPrecio());
 					}
@@ -316,7 +314,7 @@ public class Aplicacion {
 				//input = 3 -> Agregar combo
 				else if (menu == 3){
 					continuar = false;
-					System.out.println("\n--------------- COMBOS ---------------\n");
+					System.out.println("--------------- COMBOS ---------------\n");
 					ArrayList<Combo> combos = restaurante.getCombos();
 					for (int i = 0; i < combos.size(); i++) {
 						Combo valorC = combos.get(i);
@@ -347,16 +345,31 @@ public class Aplicacion {
 		}
 	}
 	
-	private void finalizar_pedido() throws FileNotFoundException, UnsupportedEncodingException {
+	private void finalizar_pedido() {
 		System.out.println(restaurante.cerrarYGuardarPedido());
 		System.out.println("Gracias por comprar con nosotros.");
-		int id = pedido.getIdPedido();
-		PrintWriter writer = new PrintWriter(String.valueOf(id)+ ".txt","UTF-8");
-		writer.println(listaPedidos.get(id).get("Nombre cliente"));
-		writer.println(listaPedidos.get(id).get("Direccion cliente"));
-		writer.close();
+		for (int id = 0; id < listaPedidos.size(); id++) {
+			if (Pedido.idPedido != id) { 
+				HashMap<String, ArrayList<String>> pedidoX = restaurante.getPedidoEnCurso(id);
+				ArrayList<String> productosX = pedidoX.get("Productos");
+				boolean iguales = equals(productosX);
+				if (iguales)
+					System.out.println("\nWow! El pedido que acabas de crear es exactamente igual al pedido con ID " + id);
+				else
+					System.out.println("Tu pedido no lo ha ordenado nadie mas.");
+			}
+		}
+		
 	}
 
+	@Override
+	public boolean equals(Object productosX) {
+		HashMap<String, ArrayList<String>> pedidoActual = restaurante.getPedidoEnCurso(Pedido.idPedido);
+		ArrayList<String> productosActuales = pedidoActual.get("Productos");
+		return productosActuales.equals(productosX);
+	}
+	
+	
 	private void consultar_pedido() 
 		{
 		boolean continuarC = true;
@@ -370,7 +383,7 @@ public class Aplicacion {
 				ArrayList<String> nombre = pedido.get("Nombre cliente");
 				System.out.println("Nombre del cliente: " + nombre);
 				ArrayList<String> direccion = pedido.get("Direccion cliente");
-				System.out.println("Direccion de env�o: " + direccion);
+				System.out.println("Direccion de envio: " + direccion);
 				ArrayList<String> productos = pedido.get("Productos");
 				System.out.println("Orden: " + productos);
 			}
@@ -379,6 +392,7 @@ public class Aplicacion {
 			 	}
 			}
 		}
+	
 	
 	public String input(String mensaje)
 	{

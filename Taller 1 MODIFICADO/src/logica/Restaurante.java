@@ -59,6 +59,7 @@ public class Restaurante {
 		cargarIngredientes(archivoIngredientes);
 		cargarMenu(archivoMenu);
 		cargarCombos(archivoCombos);
+		cargarBebidas(archivoMenu);
 	}
 
 	private void cargarIngredientes(String archivoIngredientes) throws IOException {
