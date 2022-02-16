@@ -1,11 +1,14 @@
 package consola;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.io.PrintWriter;
 import logica.Bebida;
 import logica.Combo;
 import logica.Ingrediente;
@@ -191,8 +194,7 @@ public class Aplicacion {
 																		int accionIngrediente = Integer.parseInt(input("\nIngresa 1 para agregar el ingrediente o 0 para quitarlo"));
 																		//input = 1 -> agregar
 																		if (accionIngrediente == 1) {
-																			modificacion += " con " + valorI.getNombre();
-																			
+																			ProductoAjustado.nombre += " con " + valorI.getNombre();
 																			valorPA.ingredientesAgregados.add(valorI);
 																			continuar1 = false;
 																			continuar12 = false;
@@ -200,8 +202,7 @@ public class Aplicacion {
 																		//input = 0 -> quitar
 																		else if (accionIngrediente == 0) {
 																			
-																			modificacion += " sin " + valorI.getNombre(); 
-																			//quitar ingrediente
+																			ProductoAjustado.nombre += " sin " + valorI.getNombre();
 																			continuar1 = false;
 																			continuar12 = false;
 																		}
@@ -226,7 +227,7 @@ public class Aplicacion {
 																		else if (seguir == 0) {
 																			
 																			pedido.agregarProducto(valorPA);
-																			System.out.println("\nEl producto " + valorP.getNombre() + modificacion + " se agrego correctamente a tu pedido.");
+																			System.out.println("\nEl producto " + valorPA.getNombre() + modificacion + " se agrego correctamente a tu pedido.");
 																			System.out.println("\nTotal: $" + pedido.precioTotal);
 																			System.out.println("Para seguir agregando elementos selecciona la opcion 2.");
 																			continuar2 = false;
@@ -287,17 +288,17 @@ public class Aplicacion {
 					System.out.println("\n--------------- BEBIDAS ---------------\n");
 					ArrayList<Bebida> bebidas = restaurante.getBebidas();
 					for (int i = 0; i < bebidas.size(); i++) {
-						Bebida valorP = bebidas.get(i);
-						System.out.println((i+1) + ". " + valorP.getNombre() + " ----------------- $" + valorP.getPrecio());
+						Bebida valorB = bebidas.get(i);
+						System.out.println((i+1) + ". " + valorB.getNombre() + " ----------------- $" + valorB.getPrecio());
 					}
-					boolean continuarP = true;
-					while (continuarP) {
+					boolean continuarB = true;
+					while (continuarB) {
 						try {
 							int numProducto = Integer.parseInt(input("\nIngresa el numero del producto que deseas agregar"));
 							if (numProducto > bebidas.size())
 								System.out.println("\nPor favor ingresa una opcion valida.\n");
 							else {
-								continuarP = false;
+								continuarB = false;
 								Bebida valorP = bebidas.get(numProducto-1);
 								pedido.agregarProducto(valorP);
 								System.out.println("\nEl producto " + valorP.getNombre() + " se agreg� correctamente a tu pedido.");
@@ -311,10 +312,6 @@ public class Aplicacion {
 					
 										}
 				}
-			
-				
-				
-				
 				
 				//input = 3 -> Agregar combo
 				else if (menu == 3){
@@ -350,9 +347,14 @@ public class Aplicacion {
 		}
 	}
 	
-	private void finalizar_pedido() {
+	private void finalizar_pedido() throws FileNotFoundException, UnsupportedEncodingException {
 		System.out.println(restaurante.cerrarYGuardarPedido());
 		System.out.println("Gracias por comprar con nosotros.");
+		int id = pedido.getIdPedido();
+		PrintWriter writer = new PrintWriter(String.valueOf(id)+ ".txt","UTF-8");
+		writer.println(listaPedidos.get(id).get("Nombre cliente"));
+		writer.println(listaPedidos.get(id).get("Direccion cliente"));
+		writer.close();
 	}
 
 	private void consultar_pedido() 
