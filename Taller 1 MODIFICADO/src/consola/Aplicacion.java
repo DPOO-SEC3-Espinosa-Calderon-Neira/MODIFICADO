@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import logica.Bebida;
 import logica.Combo;
 import logica.Ingrediente;
 import logica.Pedido;
@@ -129,7 +130,8 @@ public class Aplicacion {
 	private void agregar_elemento() {
 		System.out.println("\n-------------------- MENU --------------------\n");
 		System.out.println("1. VER PRODUCTOS");
-		System.out.println("2. VER COMBOS\n");
+		System.out.println("2. VER BEBIDAS\n");
+		System.out.println("3. VER COMBOS\n");
 		boolean continuar = true;
 		while (continuar) {
 			try {
@@ -276,8 +278,46 @@ public class Aplicacion {
 						}
 					}
 				}
-				//input = 2 -> Agregar combo
-				else if (menu == 2){
+				
+				////////
+				
+				//input = 2 -> Agregar Bebida
+				if (menu == 2) {
+					continuar = false;
+					System.out.println("\n--------------- BEBIDAS ---------------\n");
+					ArrayList<Bebida> bebidas = restaurante.getBebidas();
+					for (int i = 0; i < bebidas.size(); i++) {
+						Bebida valorP = bebidas.get(i);
+						System.out.println((i+1) + ". " + valorP.getNombre() + " ----------------- $" + valorP.getPrecio());
+					}
+					boolean continuarP = true;
+					while (continuarP) {
+						try {
+							int numProducto = Integer.parseInt(input("\nIngresa el numero del producto que deseas agregar"));
+							if (numProducto > bebidas.size())
+								System.out.println("\nPor favor ingresa una opcion valida.\n");
+							else {
+								continuarP = false;
+								Bebida valorP = bebidas.get(numProducto-1);
+								pedido.agregarProducto(valorP);
+								System.out.println("\nEl producto " + valorP.getNombre() + " se agregï¿½ correctamente a tu pedido.");
+								System.out.println("\nTotal: $" + pedido.precioTotal);
+								System.out.println("Para seguir agregando elementos selecciona la opciï¿½n 2.");
+								}
+						}
+					
+							catch (NumberFormatException e) {}
+					
+					
+										}
+				}
+			
+				
+				
+				
+				
+				//input = 3 -> Agregar combo
+				else if (menu == 3){
 					continuar = false;
 					System.out.println("\n--------------- COMBOS ---------------\n");
 					ArrayList<Combo> combos = restaurante.getCombos();
@@ -328,7 +368,7 @@ public class Aplicacion {
 				ArrayList<String> nombre = pedido.get("Nombre cliente");
 				System.out.println("Nombre del cliente: " + nombre);
 				ArrayList<String> direccion = pedido.get("Direccion cliente");
-				System.out.println("Direccion de envío: " + direccion);
+				System.out.println("Direccion de envï¿½o: " + direccion);
 				ArrayList<String> productos = pedido.get("Productos");
 				System.out.println("Orden: " + productos);
 			}
