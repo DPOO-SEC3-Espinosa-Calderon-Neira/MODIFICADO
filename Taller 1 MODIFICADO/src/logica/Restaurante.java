@@ -14,9 +14,10 @@ public class Restaurante {
 	private Ingrediente ingrediente;
 	private ProductoMenu productoMenu;
 
-	ArrayList<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
-	ArrayList<ProductoMenu> productosMenu = new ArrayList<ProductoMenu>();
-	ArrayList<Combo> combos = new ArrayList<Combo>();
+	private ArrayList<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
+	private ArrayList<ProductoMenu> productosMenu = new ArrayList<ProductoMenu>();
+	private ArrayList<Bebida> bebidas = new ArrayList<Bebida>();
+	private ArrayList<Combo> combos = new ArrayList<Combo>();
 
 	public Pedido iniciarPedido(String nombreCliente, String direccionCliente) {
 		return this.pedido = new Pedido(nombreCliente, direccionCliente);
@@ -36,6 +37,9 @@ public class Restaurante {
 
 	public ArrayList<Ingrediente> getIngredientes() {
 		return ingredientes;
+	}
+	public ArrayList<Bebida> getBebidas() {
+		return bebidas;
 	}
 	
 	public ArrayList<Combo> getCombos() {
@@ -93,7 +97,24 @@ public class Restaurante {
 		
 		br.close();
 	}
+	
+	private void cargarBebidas(String archivoMenu) throws IOException {
 
+		File file = new File(archivoMenu);
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+
+		while ((line = br.readLine()) != null) {
+			String[] partes = line.split(";");
+			String nombreBebida = partes[0];
+			int precioBase = Integer.parseInt(partes[1]);
+			Bebida nuevaBebida = new Bebida(nombreBebida, precioBase);
+			bebidas.add(nuevaBebida);
+		}
+		
+		br.close();
+	}
 	private void cargarCombos(String archivoCombos) throws IOException {
 
 		File file = new File(archivoCombos);
