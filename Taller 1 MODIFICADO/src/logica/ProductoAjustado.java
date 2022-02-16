@@ -11,6 +11,7 @@ public class ProductoAjustado implements Producto {
 	
 	public ProductoAjustado(ProductoMenu base) {
 		precio = base.getPrecio();
+		nombre = base.getNombre();
 	}
 	
 	/*
